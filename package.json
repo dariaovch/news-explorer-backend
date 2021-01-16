@@ -1,0 +1,33 @@
+{
+  "name": "news-explorer-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dariaovch/news-explorer-backend.git"
+  },
+  "keywords": [],
+  "author": "Daria Ovchinnikova",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dariaovch/news-explorer-backend/issues"
+  },
+  "homepage": "https://github.com/dariaovch/news-explorer-backend#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "eslint": "^7.18.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.11.12",
+    "validator": "^13.5.2"
+  },
+  "devDependencies": {
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "nodemon": "^2.0.7"
+  }
+}
