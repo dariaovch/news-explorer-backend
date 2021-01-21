@@ -22,13 +22,20 @@ router.get('/', getArticles);
 
 router.post('/', celebrate({
   body: Joi.object().keys({
-    name: Joi.string().required().min(2).max(30),
+    keyword: Joi.string().required(),
+    title: Joi.string().required(),
+    text: Joi.string().required(),
+    date: Joi.string().required(),
+    source: Joi.string().required(),
     link: Joi.string().required().custom(urlValidator),
+    image: Joi.string().required().custom(urlValidator),
   }),
 }), createArticle);
 
-router.delete('/:cardId', celebrate({
+router.delete('/:articleId', celebrate({
   params: Joi.object().keys({
-    cardId: Joi.string().alphanum().length(24).hex(),
+    articleId: Joi.string().alphanum().length(24).hex(),
   }),
 }), deleteArticle);
+
+module.exports = router;

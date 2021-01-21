@@ -1,6 +1,6 @@
 const Article = require('../models/article');
 const CastError = require('../errors/cast-error');
-const ForbiddenError = require('../errors/forbidden-error');
+// const ForbiddenError = require('../errors/forbidden-error');
 const NotFoundError = require('../errors/not-found-err');
 
 // Получить массив всех статей
@@ -41,23 +41,12 @@ module.exports.createArticle = (req, res, next) => {
 module.exports.deleteArticle = (req, res, next) => {
   const { articleId } = req.params;
 
-  Article.findById(articleId)
-    .then((article) => {
-      if (!article) {
+  Article.findByIdAndRemove(articleId)
+    .then((deletedArticle) => {
+      if (!deletedArticle) {
         throw new NotFoundError('Запрашиваемый ресурс не найден');
       }
-
-      if (req.user._id === article.owner.toString()) {
-        Article.findByIdAndRemove(article.id)
-          .then((deletedArticle) => {
-            if (!deletedArticle) {
-              throw new NotFoundError('Запрашиваемый ресурс не найден');
-            }
-            res.status(200).send({ message: 'Статья удалена' });
-          });
-      } else {
-        throw new ForbiddenError('Нельзя удалять чужие статьи');
-      }
+      res.status(200).send({ message: 'Статья удалена' });
     })
     .catch((err) => {
       if (err.kind === 'ObjectId') {
