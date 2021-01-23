@@ -4,16 +4,16 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 const helmet = require('helmet');
 
-// Назначаем порт, с которого приложение слушает запросы
-const { PORT = 3000 } = process.env;
-
-const app = express();
-
 // Ошибки валидации запросов
 const { errors } = require('celebrate');
 
 // Адрес базы данных
 const { mongodbUrl } = require('./utils/config');
+
+// Назначаем порт, с которого приложение слушает запросы
+const { PORT = 3000, DB_URL = mongodbUrl } = process.env;
+
+const app = express();
 
 // Логирование
 const { requestLogger, errorLogger } = require('./middlewares/logger');
@@ -28,7 +28,7 @@ const routes = require('./routes/index');
 const errorsHandler = require('./middlewares/error-handler');
 
 // Объект опций содержит свойства для совместимости mongoose и MongoDB
-mongoose.connect(mongodbUrl, {
+mongoose.connect(DB_URL, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,
@@ -51,7 +51,4 @@ app.use(errors());
 
 app.use(errorsHandler);
 
-app.listen(PORT, () => {
-  // eslint-disable-next-line no-console
-  console.log(`The app is listening to port ${PORT}`);
-});
+app.listen(PORT);
