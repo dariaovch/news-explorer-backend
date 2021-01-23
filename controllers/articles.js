@@ -2,6 +2,7 @@ const Article = require('../models/article');
 const CastError = require('../errors/cast-error');
 const ForbiddenError = require('../errors/forbidden-error');
 const NotFoundError = require('../errors/not-found-err');
+const { errorMessages, successMessages } = require('../utils/constants');
 
 // Получить массив всех статей
 module.exports.getArticles = (req, res, next) => {
@@ -44,24 +45,24 @@ module.exports.deleteArticle = (req, res, next) => {
   Article.findById(articleId).select('+owner')
     .then((article) => {
       if (!article) {
-        throw new NotFoundError('Запрашиваемый ресурс не найден');
+        throw new NotFoundError(errorMessages.NOT_FOUND_MESSAGE);
       }
 
       if (req.user._id === article.owner.toString()) {
         Article.findByIdAndRemove(article.id)
           .then((deletedArticle) => {
             if (!deletedArticle) {
-              throw new NotFoundError('Запрашиваемый ресурс не найден');
+              throw new NotFoundError(errorMessages.NOT_FOUND_MESSAGE);
             }
-            res.status(200).send({ message: 'Статья удалена' });
+            res.status(200).send({ message: successMessages.DELETE_SUCCESS });
           });
       } else {
-        throw new ForbiddenError('Нельзя удалять чужие статьи');
+        throw new ForbiddenError(errorMessages.FORBIDDEN_MESSAGE);
       }
     })
     .catch((err) => {
       if (err.kind === 'ObjectId') {
-        throw new CastError('Невалидный id');
+        throw new CastError(errorMessages.CAST_ERR_MESSAGE);
       }
       next(err);
     });

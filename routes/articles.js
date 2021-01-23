@@ -10,10 +10,11 @@ const {
 } = require('../controllers/articles');
 
 const CastError = require('../errors/cast-error');
+const { errorMessages } = require('../utils/constants');
 
 const urlValidator = (value) => {
   if (!validator.isURL(value)) {
-    throw new CastError('Переданы некорректные данные');
+    throw new CastError(errorMessages.CAST_ERR_MESSAGE);
   }
   return value;
 };

@@ -4,6 +4,8 @@ const User = require('../models/user');
 const NotFoundError = require('../errors/not-found-err');
 const ConflictError = require('../errors/conflict-error');
 // const CastError = require('../errors/cast-error');
+const { errorMessages, successMessages } = require('../utils/constants');
+const { jwtSecret } = require('../utils/config');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -12,7 +14,7 @@ module.exports.getCurrentUserInfo = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       if (!user) {
-        throw new NotFoundError('Пользователь не найден');
+        throw new NotFoundError(errorMessages.NOT_FOUND_MESSAGE);
       }
       res.send(user);
     })
@@ -33,10 +35,10 @@ module.exports.createUser = (req, res, next) => {
       email,
       password: hash,
     })
-      .then(() => res.send({ message: 'Вы успешно зарегистрировались!' }))
+      .then(() => res.send({ message: successMessages.SIGNUP_SUCCESS }))
       .catch((err) => {
         if (err.code === 11000 || err.name === 'MongoError') {
-          next(new ConflictError('Такой email уже зарегистрирован'));
+          next(new ConflictError(errorMessages.CONFLICT_MESSAGE));
         }
         next(err);
       }));
@@ -50,7 +52,7 @@ module.exports.login = (req, res, next) => {
     .then((user) => {
       const token = jwt.sign(
         { _id: user._id },
-        NODE_ENV === 'production' ? JWT_SECRET : 'top-secrect-formillion',
+        NODE_ENV === 'production' ? JWT_SECRET : jwtSecret,
         { expiresIn: '7d' },
       );
 

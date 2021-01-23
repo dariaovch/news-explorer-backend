@@ -1,4 +1,6 @@
 const jwt = require('jsonwebtoken');
+const { errorMessages } = require('../utils/constants');
+const { jwtSecret } = require('../utils/config');
 
 const newLocal = process.env;
 const { NODE_ENV, JWT_SECRET } = newLocal;
@@ -11,18 +13,18 @@ module.exports = (req, res, next) => {
   if (!authorization || !authorization.startsWith('Bearer ')) {
     return res
       .status(401)
-      .send({ message: 'Необходима авторизация' });
+      .send(errorMessages.UNAUTHORIZED_MESSAGE);
   }
 
   const token = authorization.replace('Bearer ', '');
   let payload;
 
   try {
-    payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'top-secret-formillion');
+    payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : jwtSecret);
   } catch (err) {
     return res
       .status(401)
-      .send({ message: 'Необходима авторизация' });
+      .send(errorMessages.UNAUTHORIZED_MESSAGE);
   }
 
   req.user = payload;
